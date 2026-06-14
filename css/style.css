@@ -1,0 +1,175 @@
+/* Core Styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #0b0c10;
+    color: #c5c6c7;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Header */
+header {
+    background-color: #1f2833;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #45f3ff;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #45f3ff;
+}
+
+nav a {
+    color: #ffffff;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+nav a:hover {
+    color: #45f3ff;
+}
+
+/* Main Content Layout */
+main {
+    flex: 1;
+    padding: 40px;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* Admin Dashboard Form */
+.admin-card {
+    background-color: #1f2833;
+    padding: 30px;
+    border-radius: 10px;
+    margin-bottom: 40px;
+    border: 1px solid #45f3ff;
+}
+
+.admin-card h2 {
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    background-color: #0b0c10;
+    border: 1px solid #c5c6c7;
+    color: #ffffff;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #45f3ff;
+    color: #0b0c10;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background-color: #66fcf1;
+    box-shadow: 0 0 10px #45f3ff;
+}
+
+/* Games Grid View */
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.game-card {
+    background-color: #1f2833;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid #2f3e46;
+}
+
+.badge {
+    background-color: #45f3ff;
+    color: #0b0c10;
+    padding: 3px 8px;
+    font-size: 12px;
+    border-radius: 3px;
+    font-weight: bold;
+    display: inline-block;
+    margin: 10px 0;
+}
+
+/* Action Buttons Setup */
+.action-options {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.action-trigger-btn {
+    width: 100%;
+    margin-top: 15px;
+}
+
+.download-btn {
+    background-color: #ff4757;
+    color: white;
+    font-size: 14px;
+    padding: 10px;
+}
+
+.download-btn:hover {
+    background-color: #ff6b81;
+    box-shadow: 0 0 10px #ff4757;
+}
+
+.play-online-btn {
+    background-color: #2ed573;
+    color: white;
+    font-size: 14px;
+    padding: 10px;
+}
+
+.play-online-btn:hover {
+    background-color: #7bed9f;
+    box-shadow: 0 0 10px #2ed573;
+}
+
+.hidden {
+    display: none;
+}
+
+#statusMessage {
+    margin-top: 15px;
+    font-weight: bold;
+    color: #45f3ff;
+}
+
+/* Footer */
+footer {
+    background-color: #1f2833;
+    text-align: center;
+    padding: 15px;
+    font-size: 14px;
+    border-top: 1px solid #2f3e46;
+}

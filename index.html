@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CharlieFreeGames | Upload & Play Free Games</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header>
+        <div class="logo">🎮 CharlieFreeGames</div>
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#admin" id="adminBtn">Admin Panel</a>
+        </nav>
+    </header>
+
+    <!-- Main Container -->
+    <main>
+        <!-- Admin Upload Section (Hidden by default, toggled via JS) -->
+        <section id="adminSection" class="admin-card hidden">
+            <h2>📤 Upload Directly to Web</h2>
+            <form id="uploadForm">
+                <input type="text" id="gameName" placeholder="Game Name (e.g., GTA Vice City)" required>
+                <select id="gameType" required>
+                    <option value="" disabled selected>Select Game Category</option>
+                    <option value="PC Game">PC Game (.zip/.exe)</option>
+                    <option value="Mobile Game">Mobile Game (.apk)</option>
+                    <option value="Online Game">Online Game (HTML5)</option>
+                </select>
+                <input type="file" id="gameFile" required>
+                <button type="submit" id="submitBtn">Deploy to Web Storage</button>
+            </form>
+            <div id="statusMessage"></div>
+        </section>
+
+        <!-- Live Games Display Section -->
+        <section id="gamesSection">
+            <h2>🎯 Live Free Games</h2>
+            <div class="games-grid" id="gamesGrid">
+                <!-- Demo Card with Action Options -->
+                <div class="game-card default-card">
+                    <h3>Demo Racing Game</h3>
+                    <span class="badge">Online & PC Game</span>
+                    <p>Click below to choose your action.</p>
+                    
+                    <!-- Main Button -->
+                    <button class="action-trigger-btn">Play / Download</button>
+                    
+                    <!-- Hidden Options Box (JS se khule ga) -->
+                    <div class="action-options hidden">
+                        <button class="download-btn" data-game="Demo Racing Game">📥 Download File</button>
+                        <button class="play-online-btn" data-game="Demo Racing Game">🎮 Play Online</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 CharlieFreeGames - 100% Free Public Service</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
