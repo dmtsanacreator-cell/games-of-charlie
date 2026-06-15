@@ -1,8 +1,9 @@
 import { initializeApp } from "https://gstatic.com";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://gstatic.com";
 import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://gstatic.com";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://gstatic.com";
 
-// Same Configuration (Isay main.js mein bhi initialize karna zaroori hai)
+// Configuration
 const firebaseConfig = {
     apiKey: "AIzaSyCwmGUz0kylp1c9O4kvMk0rdefQAnYnM5w",
     authDomain: "://firebaseapp.com",
@@ -14,20 +15,96 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
+// Elements
+const adminBtn = document.getElementById('adminBtn');
+const adminSection = document.getElementById('adminSection');
+const firebaseAuthBox = document.getElementById('firebaseAuthBox');
+const uploadFormContainer = document.getElementById('uploadFormContainer');
 const gamesGrid = document.getElementById('gamesGrid');
 
-// 1. Database se Games Load karke Screen par Dikhana (On Page Load)
+const authTitle = document.getElementById('authTitle');
+const btnAuthSubmit = document.getElementById('btnAuthSubmit');
+const btnAuthToggle = document.getElementById('btnAuthToggle');
+const toggleText = document.getElementById('toggleText');
+const userEmailDisplay = document.getElementById('userEmailDisplay');
+const logoutBtn = document.getElementById('logoutBtn');
+
+let isLoginMode = true;
+
+// Toggle Admin Section Visibility
+adminBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    adminSection.classList.toggle('hidden');
+});
+
+// Toggle Login vs Register Interface
+if(btnAuthToggle) {
+    btnAuthToggle.addEventListener('click', function toggleView() {
+        isLoginMode = !isLoginMode;
+        if (isLoginMode) {
+            authTitle.innerText = "Admin Login";
+            btnAuthSubmit.innerText = "Sign In";
+            toggleText.innerHTML = 'Account nahi hai? <button class="auth-toggle" id="btnAuthToggle">Register Karein</button>';
+        } else {
+            authTitle.innerText = "Register Admin Account";
+            btnAuthSubmit.innerText = "Sign Up";
+            toggleText.innerHTML = 'Pehle se account hai? <button class="auth-toggle" id="btnAuthToggle">Login Karein</button>';
+        }
+        document.getElementById('btnAuthToggle').addEventListener('click', toggleView);
+    });
+}
+
+// Track Auth State (User Login check)
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        firebaseAuthBox.classList.add('hidden');
+        uploadFormContainer.classList.remove('hidden');
+        userEmailDisplay.innerText = "👑 Admin: " + user.email;
+    } else {
+        firebaseAuthBox.classList.remove('hidden');
+        uploadFormContainer.classList.add('hidden');
+    }
+});
+
+// Authentication Action
+btnAuthSubmit.addEventListener('click', () => {
+    const email = document.getElementById('authEmail').value;
+    const password = document.getElementById('authPassword').value;
+
+    if(!email || !password) {
+        alert("Please fill all fields.");
+        return;
+    }
+
+    if (isLoginMode) {
+        signInWithEmailAndPassword(auth, email, password)
+            .then(() => alert("Logged in successfully!"))
+            .catch(err => alert("Login Error: " + err.message));
+    } else {
+        createUserWithEmailAndPassword(auth, email, password)
+            .then(() => alert("Account registered successfully!"))
+            .catch(err => alert("Registration Error: " + err.message));
+    }
+});
+
+// Logout
+logoutBtn.addEventListener('click', () => {
+    signOut(auth).then(() => alert("Logged Out!"));
+});
+
+// Load Games dynamically from Cloud
 async function loadGames() {
-    gamesGrid.innerHTML = ''; // Pehle grid khali karein
+    gamesGrid.innerHTML = '';
     try {
         const q = query(collection(db, "games"), orderBy("timestamp", "desc"));
         const querySnapshot = await getDocs(q);
         
         if(querySnapshot.empty) {
-            gamesGrid.innerHTML = '<p style="grid-column: 1/-1;">No games uploaded yet.</p>';
+            gamesGrid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding:20px;">No games uploaded yet.</p>';
             return;
         }
 
@@ -40,7 +117,6 @@ async function loadGames() {
     }
 }
 
-// Card Render Karne Ka Function
 function renderGameCard(name, type, fileUrl) {
     const newCard = document.createElement('div');
     newCard.className = 'game-card';
@@ -57,23 +133,22 @@ function renderGameCard(name, type, fileUrl) {
     gamesGrid.appendChild(newCard);
 }
 
-// Page load hote hi games load karein
+// Initial Load
 loadGames();
 
-// 2. Event Delegation: Grid ke buttons handling
+// Grid buttons handling
 gamesGrid.addEventListener('click', function(e) {
     if (e.target.classList.contains('action-trigger-btn')) {
         const optionsDiv = e.target.nextElementSibling;
         optionsDiv.classList.toggle('hidden');
     }
-    
     if (e.target.classList.contains('play-online-btn')) {
         const gameName = e.target.getAttribute('data-game');
         alert("Launching Game Client: Loading " + gameName + " inside browser... 🕹️");
     }
 });
 
-// 3. Asli Firebase Upload Mechanism
+// Form File Upload to Cloud Storage
 document.getElementById('uploadForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
@@ -84,13 +159,12 @@ document.getElementById('uploadForm').addEventListener('submit', async function(
     const submitBtn = document.getElementById('submitBtn');
 
     if (fileInput.files.length === 0) return;
-    const file = fileInput.files[0];
+    const file = fileInput.files[0]; // Fixed singular file index
 
     status.innerText = "Uploading file to cloud storage... 🚀";
     submitBtn.disabled = true;
 
     try {
-        // A. File ko Firebase Storage mein upload karna
         const storageRef = ref(storage, 'mods/' + Date.now() + '_' + file.name);
         const snapshot = await uploadBytes(storageRef, file);
         
@@ -99,7 +173,6 @@ document.getElementById('uploadForm').addEventListener('submit', async function(
 
         status.innerText = "Saving game data to database... 💾";
         
-        // B. Data ko Firestore Database mein save karna
         await addDoc(collection(db, "games"), {
             name: name,
             type: type,
@@ -109,8 +182,6 @@ document.getElementById('uploadForm').addEventListener('submit', async function(
 
         status.innerText = "Success! Game is now permanently live. 🎉";
         document.getElementById('uploadForm').reset();
-        
-        // C. List ko reload karna taake naya card dikh jaye
         loadGames();
 
     } catch (error) {
