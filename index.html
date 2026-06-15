@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CharlieFreeGames | Upload & Play Free Games</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Kuch zaroori dynamic classes jo pehle se css mein shayad na hon */
+        .hidden { display: none !important; }
+        .auth-box { background: #222; padding: 15px; border-radius: 8px; border: 1px solid #444; margin-bottom: 15px; text-align: left; }
+        .auth-box input { width: 100%; padding: 10px; margin: 8px 0; border-radius: 4px; border: 1px solid #555; background: #333; color: white; box-sizing: border-box; }
+        .auth-box button { width: 100%; padding: 10px; background: #ff4757; border: none; color: white; font-weight: bold; cursor: pointer; border-radius: 4px; }
+        .auth-box button:hover { background: #ff6b81; }
+        .auth-toggle { background: none !important; border: none; color: #54a0ff; cursor: pointer; text-decoration: underline; display: inline; padding: 0; width: auto; font-weight: normal !important; }
+        .user-info { color: #2ed573; margin-bottom: 10px; font-weight: bold; font-size: 14px; }
+        #logoutBtn { background: #57606f; padding: 5px 10px; color: white; border: none; border-radius: 4px; cursor: pointer; float: right; margin-top: -5px; }
+    </style>
 </head>
 <body>
 
@@ -19,20 +30,40 @@
 
     <!-- Main Container -->
     <main>
-        <!-- Admin Upload Section (Hidden by default, toggled via JS) -->
+        <!-- Admin Upload Section (Controlled via Firebase Auth) -->
         <section id="adminSection" class="admin-card hidden">
-            <h2>📤 Upload Directly to Web</h2>
-            <form id="uploadForm">
-                <input type="text" id="gameName" placeholder="Game Name (e.g., GTA Vice City)" required>
-                <select id="gameType" required>
-                    <option value="" disabled selected>Select Game Category</option>
-                    <option value="PC Game">PC Game (.zip/.exe)</option>
-                    <option value="Mobile Game">Mobile Game (.apk)</option>
-                    <option value="Online Game">Online Game (HTML5)</option>
-                </select>
-                <input type="file" id="gameFile" required>
-                <button type="submit" id="submitBtn">Deploy to Web Storage</button>
-            </form>
+            
+            <!-- FIREBASE LOGIN/REGISTER BOX -->
+            <div id="firebaseAuthBox" class="auth-box">
+                <h3 id="authTitle">Admin Login</h3>
+                <input type="email" id="authEmail" placeholder="Email Address">
+                <input type="password" id="authPassword" placeholder="Password">
+                <button id="btnAuthSubmit">Sign In</button>
+                <p id="toggleText" style="font-size: 12px; margin-top: 10px; text-align: center;">
+                    Account nahi hai? <button class="auth-toggle" id="btnAuthToggle">Register Karein</button>
+                </p>
+            </div>
+
+            <!-- ACTUAL UPLOAD FORM (Hidden until logged in) -->
+            <div id="uploadFormContainer" class="hidden">
+                <div class="user-info">
+                    <span id="userEmailDisplay">Logged in</span>
+                    <button id="logoutBtn">Logout</button>
+                </div>
+                <h2>📤 Upload Directly to Web</h2>
+                <form id="uploadForm">
+                    <input type="text" id="gameName" placeholder="Game Name (e.g., GTA Vice City)" required>
+                    <select id="gameType" required>
+                        <option value="" disabled selected>Select Game Category</option>
+                        <option value="PC Game">PC Game (.zip/.exe)</option>
+                        <option value="Mobile Game">Mobile Game (.apk)</option>
+                        <option value="Online Game">Online Game (HTML5)</option>
+                    </select>
+                    <input type="file" id="gameFile" required>
+                    <button type="submit" id="submitBtn">Deploy to Web Storage</button>
+                </form>
+            </div>
+            
             <div id="statusMessage"></div>
         </section>
 
@@ -63,6 +94,103 @@
         <p>&copy; 2026 CharlieFreeGames - 100% Free Public Service</p>
     </footer>
 
+    <!-- JS SCRIPTS -->
     <script src="js/main.js"></script>
+
+    <!-- FIREBASE INTEGRATION SCRIPT -->
+    <script type="module">
+        import { initializeApp } from "https://gstatic.com";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://gstatic.com";
+
+        // Aap ka Firebase Configuration Code
+        const firebaseConfig = {
+            apiKey: "AIzaSyCwmGUz0kylp1c9O4kvMk0rdefQAnYnM5w",
+            authDomain: "://firebaseapp.com",
+            projectId: "charlie-games",
+            storageBucket: "charlie-games.firebasestorage.app",
+            messagingSenderId: "412741482088",
+            appId: "1:412741482088:web:9f8c92c9e4839b6ee7b56d",
+            measurementId: "G-8LMY2QETZT"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Elements
+        const adminBtn = document.getElementById('adminBtn');
+        const adminSection = document.getElementById('adminSection');
+        const firebaseAuthBox = document.getElementById('firebaseAuthBox');
+        const uploadFormContainer = document.getElementById('uploadFormContainer');
+        
+        const authTitle = document.getElementById('authTitle');
+        const btnAuthSubmit = document.getElementById('btnAuthSubmit');
+        const btnAuthToggle = document.getElementById('btnAuthToggle');
+        const toggleText = document.getElementById('toggleText');
+        const userEmailDisplay = document.getElementById('userEmailDisplay');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        let isLoginMode = true;
+
+        // Header Admin Panel Link Click Karne Par Section Show/Hide Karna
+        adminBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            adminSection.classList.toggle('hidden');
+        });
+
+        // Toggle Login vs Register View
+        btnAuthToggle.addEventListener('click', () => {
+            isLoginMode = !isLoginMode;
+            if (isLoginMode) {
+                authTitle.innerText = "Admin Login";
+                btnAuthSubmit.innerText = "Sign In";
+                toggleText.innerHTML = 'Account nahi hai? <button class="auth-toggle" id="btnAuthToggle">Register Karein</button>';
+            } else {
+                authTitle.innerText = "Register Admin Account";
+                btnAuthSubmit.innerText = "Sign Up";
+                toggleText.innerHTML = 'Pehle se account hai? <button class="auth-toggle" id="btnAuthToggle">Login Karein</button>';
+            }
+            // Re-bind click event to newly rendered toggle button
+            document.getElementById('btnAuthToggle').addEventListener('click', arguments.callee);
+        });
+
+        // Track Auth State (Check user login hai ya nahi)
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                firebaseAuthBox.classList.add('hidden');
+                uploadFormContainer.classList.remove('hidden');
+                userEmailDisplay.innerText = "👑 Admin: " + user.email;
+            } else {
+                firebaseAuthBox.classList.remove('hidden');
+                uploadFormContainer.classList.add('hidden');
+            }
+        });
+
+        // Auth Submit (Login / Signup Button Logic)
+        btnAuthSubmit.addEventListener('click', () => {
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
+
+            if(!email || !password) {
+                alert("Please fill all fields.");
+                return;
+            }
+
+            if (isLoginMode) {
+                signInWithEmailAndPassword(auth, email, password)
+                    .then(() => alert("Logged in successfully!"))
+                    .catch(err => alert("Login Error: " + err.message));
+            } else {
+                createUserWithEmailAndPassword(auth, email, password)
+                    .then(() => alert("Account registered successfully!"))
+                    .catch(err => alert("Registration Error: " + err.message));
+            }
+        });
+
+        // Logout Button
+        logoutBtn.addEventListener('click', () => {
+            signOut(auth).then(() => alert("Logged Out!"));
+        });
+    </script>
 </body>
 </html>
