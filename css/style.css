@@ -65,7 +65,7 @@ main {
     margin-bottom: 20px;
 }
 
-input, select {
+input, select, textarea {
     width: 100%;
     padding: 12px;
     margin-bottom: 15px;
@@ -90,6 +90,67 @@ button:hover {
     background-color: #66fcf1;
     box-shadow: 0 0 10px #45f3ff;
 }
+
+/* --- Firebase Auth Dynamic Styles --- */
+.auth-box {
+    background: #0b0c10;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #c5c6c7;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.auth-box h3 {
+    color: #ffffff;
+    margin-bottom: 15px;
+}
+
+.auth-box button {
+    width: 100%;
+    margin-top: 5px;
+}
+
+.auth-toggle {
+    background: none !important;
+    border: none;
+    color: #45f3ff;
+    cursor: pointer;
+    text-decoration: underline;
+    display: inline;
+    padding: 0;
+    width: auto;
+    font-weight: normal !important;
+    box-shadow: none !important;
+}
+
+.auth-toggle:hover {
+    color: #66fcf1;
+    box-shadow: none !important;
+}
+
+.user-info {
+    color: #2ed573;
+    margin-bottom: 20px;
+    font-weight: bold;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#logoutBtn {
+    background-color: #ff4757;
+    color: white;
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+#logoutBtn:hover {
+    background-color: #ff6b81;
+    box-shadow: 0 0 8px #ff4757;
+}
+/* ------------------------------------ */
 
 /* Games Grid View */
 .games-grid {
@@ -156,7 +217,7 @@ button:hover {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 #statusMessage {
@@ -172,4 +233,5 @@ footer {
     padding: 15px;
     font-size: 14px;
     border-top: 1px solid #2f3e46;
+    margin-top: auto;
 }
