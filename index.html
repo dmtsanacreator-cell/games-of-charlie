@@ -4,35 +4,217 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CharlieFreeGames | Upload & Play Free Games</title>
-    <link rel="stylesheet" href="css/style.css">
     <style>
-        .hidden { display: none !important; }
-        .auth-box { background: #1f2833; padding: 30px; border-radius: 10px; margin-bottom: 40px; border: 1px solid #45f3ff; text-align: left; max-width: 500px; margin: 20px auto; }
-        .auth-box h3 { color: #ffffff; margin-bottom: 15px; font-size: 20px; }
-        .auth-box button { width: 100%; margin-top: 10px; }
-        .auth-toggle { background: none !important; border: none; color: #45f3ff; cursor: pointer; text-decoration: underline; display: inline; padding: 0; width: auto; font-weight: normal !important; box-shadow: none !important; }
-        .auth-toggle:hover { color: #66fcf1; box-shadow: none !important; }
-        .user-info { color: #2ed573; margin-bottom: 20px; font-weight: bold; font-size: 14px; display: flex; justify-content: space-between; align-items: center; }
-        #logoutBtn { background-color: #ff4757; color: white; padding: 6px 12px; font-size: 12px; border-radius: 5px; cursor: pointer; }
-        #logoutBtn:hover { background-color: #ff6b81; box-shadow: 0 0 8px #ff4757; }
-        #loginNavBtn { background-color: #45f3ff; color: #0b0c10; padding: 8px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; border: none; margin-left: 20px; }
+        /* Matrix Cyan Theme UI */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #0b0c10;
+            color: #c5c6c7;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background-color: #1f2833;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #45f3ff;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #45f3ff;
+        }
+        nav {
+            display: flex;
+            align-items: center;
+        }
+        nav a {
+            color: #ffffff;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        nav a:hover {
+            color: #45f3ff;
+        }
+        main {
+            flex: 1;
+            padding: 40px;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        .admin-card, .auth-box {
+            background-color: #1f2833;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 40px;
+            border: 1px solid #45f3ff;
+            width: 100%;
+        }
+        .auth-box {
+            max-width: 500px;
+            margin: 20px auto;
+            text-align: left;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            background-color: #0b0c10;
+            border: 1px solid #c5c6c7;
+            color: #ffffff;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #45f3ff;
+            color: #0b0c10;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background-color: #66fcf1;
+            box-shadow: 0 0 10px #45f3ff;
+        }
+        .auth-box button {
+            width: 100%;
+            margin-top: 10px;
+        }
+        .auth-toggle {
+            background: none !important;
+            border: none;
+            color: #45f3ff;
+            cursor: pointer;
+            text-decoration: underline;
+            display: inline;
+            padding: 0;
+            width: auto;
+            font-weight: normal !important;
+            box-shadow: none !important;
+        }
+        .user-info {
+            color: #2ed573;
+            margin-bottom: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #logoutBtn {
+            background-color: #ff4757;
+            color: white;
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 5px;
+        }
+        #loginNavBtn {
+            background-color: #45f3ff;
+            color: #0b0c10;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            margin-left: 20px;
+        }
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        .game-card {
+            background-color: #1f2833;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #2f3e46;
+        }
+        .badge {
+            background-color: #45f3ff;
+            color: #0b0c10;
+            padding: 3px 8px;
+            font-size: 12px;
+            border-radius: 3px;
+            font-weight: bold;
+            display: inline-block;
+            margin: 10px 0;
+        }
+        .action-options {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .action-trigger-btn {
+            width: 100%;
+            margin-top: 15px;
+        }
+        .download-btn {
+            background-color: #ff4757;
+            color: white;
+            font-size: 14px;
+            padding: 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            line-height: 20px;
+        }
+        .download-btn:hover {
+            background-color: #ff6b81;
+            box-shadow: 0 0 10px #ff4757;
+        }
+        .play-online-btn {
+            background-color: #2ed573;
+            color: white;
+            font-size: 14px;
+            padding: 10px;
+        }
+        .hidden {
+            display: none !important;
+        }
+        #statusMessage {
+            margin-top: 15px;
+            font-weight: bold;
+            color: #45f3ff;
+        }
+        footer {
+            background-color: #1f2833;
+            text-align: center;
+            padding: 15px;
+            font-size: 14px;
+            border-top: 1px solid #2f3e46;
+            margin-top: auto;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Header Navigation -->
     <header>
         <div class="logo">🎮 CharlieFreeGames</div>
-        <nav style="display: flex; align-items: center;">
+        <nav>
             <a href="#home">Home</a>
             <a href="#admin" id="adminBtn" class="hidden">Admin Panel</a>
             <button id="loginNavBtn">Login</button>
         </nav>
     </header>
 
-    <!-- Main Container -->
     <main>
-        <!-- SEPARATE LOGIN/REGISTER BOX -->
+        <!-- LOGIN BOX -->
         <section id="authSection" class="auth-box hidden">
             <h3 id="authTitle">Admin Login</h3>
             <input type="email" id="authEmail" placeholder="Email Address">
@@ -43,7 +225,7 @@
             </p>
         </section>
 
-        <!-- Admin Upload Section -->
+        <!-- UPLOAD SECTION -->
         <section id="adminSection" class="admin-card hidden">
             <div class="user-info">
                 <span id="userEmailDisplay">Logged in</span>
@@ -51,7 +233,7 @@
             </div>
             <h2>📤 Upload Directly to Web</h2>
             <form id="uploadForm">
-                <input type="text" id="gameName" placeholder="Game Name (e.g., GTA Vice City)" required>
+                <input type="text" id="gameName" placeholder="Game Name (e.g., GTA SA Island)" required>
                 <select id="gameType" required>
                     <option value="" disabled selected>Select Game Category</option>
                     <option value="PC Game">PC Game (.zip/.exe)</option>
@@ -64,19 +246,172 @@
             <div id="statusMessage"></div>
         </section>
 
-        <!-- Live Games Display Section -->
+        <!-- GAMES GRID -->
         <section id="gamesSection">
             <h2>🎯 Live Free Games</h2>
-            <div class="games-grid" id="gamesGrid">
-                <!-- Data Firebase se automatic load hoga -->
-            </div>
+            <div class="games-grid" id="gamesGrid"></div>
         </section>
     </main>
 
     <footer>
         <p>&copy; 2026 CharlieFreeGames - 100% Free Public Service</p>
     </footer>
+    <!-- FIREBASE AND JS LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://gstatic.com";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://gstatic.com";
+        import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://gstatic.com";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://gstatic.com";
 
-    <script type="module" src="js/main.js"></script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCwmGUz0kylp1c9O4kvMk0rdefQAnYnM5w",
+            authDomain: "charlie-games.firebaseapp.com",
+            projectId: "charlie-games",
+            storageBucket: "charlie-games.firebasestorage.app",
+            messagingSenderId: "412741482088",
+            appId: "1:412741482088:web:9f8c92c9e4839b6ee7b56d",
+            measurementId: "G-8LMY2QETZT"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        const loginNavBtn = document.getElementById('loginNavBtn');
+        const authSection = document.getElementById('authSection');
+        const adminBtn = document.getElementById('adminBtn');
+        const adminSection = document.getElementById('adminSection');
+        const gamesGrid = document.getElementById('gamesGrid');
+        const btnAuthSubmit = document.getElementById('btnAuthSubmit');
+        const userEmailDisplay = document.getElementById('userEmailDisplay');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        let isLoginMode = true;
+
+        loginNavBtn.addEventListener('click', () => {
+            adminSection.classList.add('hidden');
+            authSection.classList.toggle('hidden');
+        });
+
+        adminBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            authSection.classList.add('hidden');
+            adminSection.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', function (e) {
+            if (e.target && e.target.id === 'btnAuthToggle') {
+                isLoginMode = !isLoginMode;
+                const authTitle = document.getElementById('authTitle');
+                const toggleText = document.getElementById('toggleText');
+                if (isLoginMode) {
+                    authTitle.innerText = "Admin Login";
+                    btnAuthSubmit.innerText = "Sign In";
+                    toggleText.innerHTML = 'Account nahi hai? <button class="auth-toggle" id="btnAuthToggle">Register Karein</button>';
+                } else {
+                    authTitle.innerText = "Register Admin Account";
+                    btnAuthSubmit.innerText = "Sign Up";
+                    toggleText.innerHTML = 'Pehle se account hai? <button class="auth-toggle" id="btnAuthToggle">Login Karein</button>';
+                }
+            }
+        });
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                loginNavBtn.classList.add('hidden');
+                authSection.classList.add('hidden');
+                adminBtn.classList.remove('hidden');
+                adminSection.classList.remove('hidden');
+                userEmailDisplay.innerText = "👑 Admin: " + user.email;
+            } else {
+                loginNavBtn.classList.remove('hidden');
+                adminBtn.classList.add('hidden');
+                adminSection.classList.add('hidden');
+            }
+        });
+
+        btnAuthSubmit.addEventListener('click', () => {
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
+            if(!email || !password) return alert("Fill all fields.");
+
+            if (isLoginMode) {
+                signInWithEmailAndPassword(auth, email, password)
+                    .catch(err => alert("Login Error: " + err.message));
+            } else {
+                createUserWithEmailAndPassword(auth, email, password)
+                    .catch(err => alert("Register Error: " + err.message));
+            }
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            signOut(auth).then(() => location.reload());
+        });
+        async function loadGames() {
+            gamesGrid.innerHTML = '';
+            try {
+                const q = query(collection(db, "games"), orderBy("timestamp", "desc"));
+                const querySnapshot = await getDocs(q);
+                if(querySnapshot.empty) {
+                    gamesGrid.innerHTML = '<p style="grid-column:1/-1;text-align:center;">No games yet.</p>';
+                    return;
+                }
+                querySnapshot.forEach((doc) => {
+                    const game = doc.data();
+                    const newCard = document.createElement('div');
+                    newCard.className = 'game-card';
+                    newCard.innerHTML = `
+                        <h3>${game.name}</h3>
+                        <span class="badge">${game.type}</span>
+                        <p>Click below to choose your action.</p>
+                        <button class="action-trigger-btn">Play / Download</button>
+                        <div class="action-options hidden">
+                            <a href="${game.fileUrl}" target="_blank" class="download-btn">📥 Download</a>
+                            <button class="play-online-btn" data-game="${game.name}">🎮 Play</button>
+                        </div>
+                    `;
+                    gamesGrid.appendChild(newCard);
+                });
+            } catch (e) { console.error(e); }
+        }
+        loadGames();
+
+        gamesGrid.addEventListener('click', function(e) {
+            if (e.target.classList.contains('action-trigger-btn')) {
+                e.target.nextElementSibling.classList.toggle('hidden');
+            }
+            if (e.target.classList.contains('play-online-btn')) {
+                alert("Launching: " + e.target.getAttribute('data-game'));
+            }
+        });
+
+        document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const name = document.getElementById('gameName').value;
+            const type = document.getElementById('gameType').value;
+            const fileInput = document.getElementById('gameFile');
+            const status = document.getElementById('statusMessage');
+            const submitBtn = document.getElementById('submitBtn');
+
+            if (fileInput.files.length === 0) return;
+            const file = fileInput.files[0]; // Sahi static selection logic hook
+
+            status.innerText = "Uploading... 🚀";
+            submitBtn.disabled = true;
+
+            try {
+                const storageRef = ref(storage, 'mods/' + Date.now() + '_' + file.name);
+                const snapshot = await uploadBytes(storageRef, file);
+                const downloadUrl = await getDownloadURL(snapshot.ref);
+
+                await addDoc(collection(db, "games"), { name, type, fileUrl: downloadUrl, timestamp: Date.now() });
+                status.innerText = "Success! 🎉";
+                document.getElementById('uploadForm').reset();
+                loadGames();
+            } catch (err) { status.innerText = "Error: " + err.message; }
+            finally { submitBtn.disabled = false; }
+        });
+    </script>
 </body>
 </html>
