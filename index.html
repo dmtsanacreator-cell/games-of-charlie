@@ -25,9 +25,7 @@
         <div class="logo">🎮 CharlieFreeGames</div>
         <nav style="display: flex; align-items: center;">
             <a href="#home">Home</a>
-            <!-- Yeh link sirf logged-in admin ko dikhe ga -->
             <a href="#admin" id="adminBtn" class="hidden">Admin Panel</a>
-            <!-- Alag se Login Button -->
             <button id="loginNavBtn">Login</button>
         </nav>
     </header>
@@ -45,7 +43,7 @@
             </p>
         </section>
 
-        <!-- Admin Upload Section (Sirf upload handle karega) -->
+        <!-- Admin Upload Section -->
         <section id="adminSection" class="admin-card hidden">
             <div class="user-info">
                 <span id="userEmailDisplay">Logged in</span>
@@ -70,7 +68,7 @@
         <section id="gamesSection">
             <h2>🎯 Live Free Games</h2>
             <div class="games-grid" id="gamesGrid">
-                <!-- Data Firebase se load hoga -->
+                <!-- Data Firebase se automatic load hoga -->
             </div>
         </section>
     </main>
