@@ -35,53 +35,54 @@ const logoutBtn = document.getElementById('logoutBtn');
 
 let isLoginMode = true;
 
-// 1. Alada Login Button Click Behavior
+// Click Functions
 loginNavBtn.addEventListener('click', () => {
-    adminSection.classList.add('hidden'); // Upload section band karein
-    authSection.classList.toggle('hidden'); // Login box kholein/band karein
+    adminSection.classList.add('hidden');
+    authSection.classList.toggle('hidden');
 });
 
-// Admin Panel Link Click Behavior
 adminBtn.addEventListener('click', (e) => {
     e.preventDefault();
-    authSection.classList.add('hidden'); // Login section band karein
-    adminSection.classList.toggle('hidden'); // Upload section kholein
+    authSection.classList.add('hidden');
+    adminSection.classList.toggle('hidden');
 });
 
-// Toggle Login vs Register andar wala button
-btnAuthToggle.addEventListener('click', () => {
-    isLoginMode = !isLoginMode;
-    if (isLoginMode) {
-        authTitle.innerText = "Admin Login";
-        btnAuthSubmit.innerText = "Sign In";
-        toggleText.innerHTML = 'Account nahi hai? <button class="auth-toggle" id="btnAuthToggle">Register Karein</button>';
-    } else {
-        authTitle.innerText = "Register Admin Account";
-        btnAuthSubmit.innerText = "Sign Up";
-        toggleText.innerHTML = 'Pehle se account hai? <button class="auth-toggle" id="btnAuthToggle">Login Karein</button>';
-    }
-    // Re-attach event to dynamic button
-    document.getElementById('btnAuthToggle').addEventListener('click', () => btnAuthToggle.click());
-});
+// Fixed Toggle Function without arguments.callee error
+function setupToggleListener() {
+    const toggleBtn = document.getElementById('btnAuthToggle');
+    if (!toggleBtn) return;
+    
+    toggleBtn.addEventListener('click', () => {
+        isLoginMode = !isLoginMode;
+        if (isLoginMode) {
+            authTitle.innerText = "Admin Login";
+            btnAuthSubmit.innerText = "Sign In";
+            toggleText.innerHTML = 'Account nahi hai? <button class="auth-toggle" id="btnAuthToggle">Register Karein</button>';
+        } else {
+            authTitle.innerText = "Register Admin Account";
+            btnAuthSubmit.innerText = "Sign Up";
+            toggleText.innerHTML = 'Pehle se account hai? <button class="auth-toggle" id="btnAuthToggle">Login Karein</button>';
+        }
+        setupToggleListener(); // Re-bind listener safely
+    });
+}
+setupToggleListener();
 
-// Track Auth State (User login status monitor)
+// Track Auth State
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        // Logged In Status
-        loginNavBtn.classList.add('hidden'); // Login button chupayein
-        authSection.classList.add('hidden'); // Auth form chupayein
-        adminBtn.classList.remove('hidden'); // Admin Panel link dikhayein
-        
+        loginNavBtn.classList.add('hidden');
+        authSection.classList.add('hidden');
+        adminBtn.classList.remove('hidden');
         userEmailDisplay.innerText = "👑 Admin: " + user.email;
     } else {
-        // Logged Out Status
         loginNavBtn.classList.remove('hidden');
         adminBtn.classList.add('hidden');
         adminSection.classList.add('hidden');
     }
 });
 
-// Submit Authentication (Login/Register trigger)
+// Submit Auth
 btnAuthSubmit.addEventListener('click', () => {
     const email = document.getElementById('authEmail').value;
     const password = document.getElementById('authPassword').value;
@@ -102,15 +103,15 @@ btnAuthSubmit.addEventListener('click', () => {
     }
 });
 
-// Logout Operation
+// Logout
 logoutBtn.addEventListener('click', () => {
     signOut(auth).then(() => {
         alert("Logged Out!");
-        location.reload(); // Page refresh to reset state clean
+        location.reload();
     });
 });
 
-// Load Games dynamically
+// Load Games
 async function loadGames() {
     gamesGrid.innerHTML = '';
     try {
@@ -146,10 +147,9 @@ function renderGameCard(name, type, fileUrl) {
     `;
     gamesGrid.appendChild(newCard);
 }
-
 loadGames();
 
-// Grid click events
+// Grid dynamic actions
 gamesGrid.addEventListener('click', function(e) {
     if (e.target.classList.contains('action-trigger-btn')) {
         const optionsDiv = e.target.nextElementSibling;
@@ -161,7 +161,7 @@ gamesGrid.addEventListener('click', function(e) {
     }
 });
 
-// Form File Upload Functionality
+// Form File Upload
 document.getElementById('uploadForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
@@ -172,7 +172,7 @@ document.getElementById('uploadForm').addEventListener('submit', async function(
     const submitBtn = document.getElementById('submitBtn');
 
     if (fileInput.files.length === 0) return;
-    const file = fileInput.files[0]; 
+    const file = fileInput.files[0]; // Sahi singular file pointer index
 
     status.innerText = "Uploading file to cloud storage... 🚀";
     submitBtn.disabled = true;
