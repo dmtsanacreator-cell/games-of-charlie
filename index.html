@@ -7,14 +7,15 @@
     <link rel="stylesheet" href="css/style.css">
     <style>
         .hidden { display: none !important; }
-        .auth-box { background: #0b0c10; padding: 20px; border-radius: 8px; border: 1px solid #c5c6c7; margin-bottom: 15px; text-align: left; }
-        .auth-box h3 { color: #ffffff; margin-bottom: 15px; }
-        .auth-box button { width: 100%; margin-top: 5px; }
+        .auth-box { background: #1f2833; padding: 30px; border-radius: 10px; margin-bottom: 40px; border: 1px solid #45f3ff; text-align: left; max-width: 500px; margin: 20px auto; }
+        .auth-box h3 { color: #ffffff; margin-bottom: 15px; font-size: 20px; }
+        .auth-box button { width: 100%; margin-top: 10px; }
         .auth-toggle { background: none !important; border: none; color: #45f3ff; cursor: pointer; text-decoration: underline; display: inline; padding: 0; width: auto; font-weight: normal !important; box-shadow: none !important; }
         .auth-toggle:hover { color: #66fcf1; box-shadow: none !important; }
         .user-info { color: #2ed573; margin-bottom: 20px; font-weight: bold; font-size: 14px; display: flex; justify-content: space-between; align-items: center; }
-        #logoutBtn { background-color: #ff4757; color: white; padding: 6px 12px; font-size: 12px; }
+        #logoutBtn { background-color: #ff4757; color: white; padding: 6px 12px; font-size: 12px; border-radius: 5px; cursor: pointer; }
         #logoutBtn:hover { background-color: #ff6b81; box-shadow: 0 0 8px #ff4757; }
+        #loginNavBtn { background-color: #45f3ff; color: #0b0c10; padding: 8px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; border: none; margin-left: 20px; }
     </style>
 </head>
 <body>
@@ -22,48 +23,46 @@
     <!-- Header Navigation -->
     <header>
         <div class="logo">🎮 CharlieFreeGames</div>
-        <nav>
+        <nav style="display: flex; align-items: center;">
             <a href="#home">Home</a>
-            <a href="#admin" id="adminBtn">Admin Panel</a>
+            <!-- Yeh link sirf logged-in admin ko dikhe ga -->
+            <a href="#admin" id="adminBtn" class="hidden">Admin Panel</a>
+            <!-- Alag se Login Button -->
+            <button id="loginNavBtn">Login</button>
         </nav>
     </header>
 
     <!-- Main Container -->
     <main>
-        <!-- Admin Upload Section -->
-        <section id="adminSection" class="admin-card hidden">
-            
-            <!-- FIREBASE LOGIN/REGISTER BOX -->
-            <div id="firebaseAuthBox" class="auth-box">
-                <h3 id="authTitle">Admin Login</h3>
-                <input type="email" id="authEmail" placeholder="Email Address">
-                <input type="password" id="authPassword" placeholder="Password">
-                <button id="btnAuthSubmit">Sign In</button>
-                <p id="toggleText" style="font-size: 12px; margin-top: 10px; text-align: center;">
-                    Account nahi hai? <button class="auth-toggle" id="btnAuthToggle">Register Karein</button>
-                </p>
-            </div>
+        <!-- SEPARATE LOGIN/REGISTER BOX -->
+        <section id="authSection" class="auth-box hidden">
+            <h3 id="authTitle">Admin Login</h3>
+            <input type="email" id="authEmail" placeholder="Email Address">
+            <input type="password" id="authPassword" placeholder="Password">
+            <button id="btnAuthSubmit">Sign In</button>
+            <p id="toggleText" style="font-size: 12px; margin-top: 15px; text-align: center;">
+                Account nahi hai? <button class="auth-toggle" id="btnAuthToggle">Register Karein</button>
+            </p>
+        </section>
 
-            <!-- ACTUAL UPLOAD FORM -->
-            <div id="uploadFormContainer" class="hidden">
-                <div class="user-info">
-                    <span id="userEmailDisplay">Logged in</span>
-                    <button id="logoutBtn">Logout</button>
-                </div>
-                <h2>📤 Upload Directly to Web</h2>
-                <form id="uploadForm">
-                    <input type="text" id="gameName" placeholder="Game Name (e.g., GTA Vice City)" required>
-                    <select id="gameType" required>
-                        <option value="" disabled selected>Select Game Category</option>
-                        <option value="PC Game">PC Game (.zip/.exe)</option>
-                        <option value="Mobile Game">Mobile Game (.apk)</option>
-                        <option value="Online Game">Online Game (HTML5)</option>
-                    </select>
-                    <input type="file" id="gameFile" required>
-                    <button type="submit" id="submitBtn">Deploy to Web Storage</button>
-                </form>
+        <!-- Admin Upload Section (Sirf upload handle karega) -->
+        <section id="adminSection" class="admin-card hidden">
+            <div class="user-info">
+                <span id="userEmailDisplay">Logged in</span>
+                <button id="logoutBtn">Logout</button>
             </div>
-            
+            <h2>📤 Upload Directly to Web</h2>
+            <form id="uploadForm">
+                <input type="text" id="gameName" placeholder="Game Name (e.g., GTA Vice City)" required>
+                <select id="gameType" required>
+                    <option value="" disabled selected>Select Game Category</option>
+                    <option value="PC Game">PC Game (.zip/.exe)</option>
+                    <option value="Mobile Game">Mobile Game (.apk)</option>
+                    <option value="Online Game">Online Game (HTML5)</option>
+                </select>
+                <input type="file" id="gameFile" required>
+                <button type="submit" id="submitBtn">Deploy to Web Storage</button>
+            </form>
             <div id="statusMessage"></div>
         </section>
 
@@ -71,7 +70,7 @@
         <section id="gamesSection">
             <h2>🎯 Live Free Games</h2>
             <div class="games-grid" id="gamesGrid">
-                <!-- Data Firebase se automatic load hoga -->
+                <!-- Data Firebase se load hoga -->
             </div>
         </section>
     </main>
@@ -80,7 +79,6 @@
         <p>&copy; 2026 CharlieFreeGames - 100% Free Public Service</p>
     </footer>
 
-    <!-- Firebase Code handles clicks, isliye type="module" laga diya hai -->
     <script type="module" src="js/main.js"></script>
 </body>
 </html>
