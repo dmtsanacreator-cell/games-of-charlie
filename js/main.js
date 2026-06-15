@@ -20,10 +20,10 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 
 // Elements
+const loginNavBtn = document.getElementById('loginNavBtn');
+const authSection = document.getElementById('authSection');
 const adminBtn = document.getElementById('adminBtn');
 const adminSection = document.getElementById('adminSection');
-const firebaseAuthBox = document.getElementById('firebaseAuthBox');
-const uploadFormContainer = document.getElementById('uploadFormContainer');
 const gamesGrid = document.getElementById('gamesGrid');
 
 const authTitle = document.getElementById('authTitle');
@@ -35,42 +35,53 @@ const logoutBtn = document.getElementById('logoutBtn');
 
 let isLoginMode = true;
 
-// Toggle Admin Section Visibility
-adminBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    adminSection.classList.toggle('hidden');
+// 1. Alada Login Button Click Behavior
+loginNavBtn.addEventListener('click', () => {
+    adminSection.classList.add('hidden'); // Upload section band karein
+    authSection.classList.toggle('hidden'); // Login box kholein/band karein
 });
 
-// Toggle Login vs Register Interface
-if(btnAuthToggle) {
-    btnAuthToggle.addEventListener('click', function toggleView() {
-        isLoginMode = !isLoginMode;
-        if (isLoginMode) {
-            authTitle.innerText = "Admin Login";
-            btnAuthSubmit.innerText = "Sign In";
-            toggleText.innerHTML = 'Account nahi hai? <button class="auth-toggle" id="btnAuthToggle">Register Karein</button>';
-        } else {
-            authTitle.innerText = "Register Admin Account";
-            btnAuthSubmit.innerText = "Sign Up";
-            toggleText.innerHTML = 'Pehle se account hai? <button class="auth-toggle" id="btnAuthToggle">Login Karein</button>';
-        }
-        document.getElementById('btnAuthToggle').addEventListener('click', toggleView);
-    });
-}
+// Admin Panel Link Click Behavior
+adminBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    authSection.classList.add('hidden'); // Login section band karein
+    adminSection.classList.toggle('hidden'); // Upload section kholein
+});
 
-// Track Auth State (User Login check)
+// Toggle Login vs Register andar wala button
+btnAuthToggle.addEventListener('click', () => {
+    isLoginMode = !isLoginMode;
+    if (isLoginMode) {
+        authTitle.innerText = "Admin Login";
+        btnAuthSubmit.innerText = "Sign In";
+        toggleText.innerHTML = 'Account nahi hai? <button class="auth-toggle" id="btnAuthToggle">Register Karein</button>';
+    } else {
+        authTitle.innerText = "Register Admin Account";
+        btnAuthSubmit.innerText = "Sign Up";
+        toggleText.innerHTML = 'Pehle se account hai? <button class="auth-toggle" id="btnAuthToggle">Login Karein</button>';
+    }
+    // Re-attach event to dynamic button
+    document.getElementById('btnAuthToggle').addEventListener('click', () => btnAuthToggle.click());
+});
+
+// Track Auth State (User login status monitor)
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        firebaseAuthBox.classList.add('hidden');
-        uploadFormContainer.classList.remove('hidden');
+        // Logged In Status
+        loginNavBtn.classList.add('hidden'); // Login button chupayein
+        authSection.classList.add('hidden'); // Auth form chupayein
+        adminBtn.classList.remove('hidden'); // Admin Panel link dikhayein
+        
         userEmailDisplay.innerText = "👑 Admin: " + user.email;
     } else {
-        firebaseAuthBox.classList.remove('hidden');
-        uploadFormContainer.classList.add('hidden');
+        // Logged Out Status
+        loginNavBtn.classList.remove('hidden');
+        adminBtn.classList.add('hidden');
+        adminSection.classList.add('hidden');
     }
 });
 
-// Authentication Action
+// Submit Authentication (Login/Register trigger)
 btnAuthSubmit.addEventListener('click', () => {
     const email = document.getElementById('authEmail').value;
     const password = document.getElementById('authPassword').value;
@@ -91,12 +102,15 @@ btnAuthSubmit.addEventListener('click', () => {
     }
 });
 
-// Logout
+// Logout Operation
 logoutBtn.addEventListener('click', () => {
-    signOut(auth).then(() => alert("Logged Out!"));
+    signOut(auth).then(() => {
+        alert("Logged Out!");
+        location.reload(); // Page refresh to reset state clean
+    });
 });
 
-// Load Games dynamically from Cloud
+// Load Games dynamically
 async function loadGames() {
     gamesGrid.innerHTML = '';
     try {
@@ -133,10 +147,9 @@ function renderGameCard(name, type, fileUrl) {
     gamesGrid.appendChild(newCard);
 }
 
-// Initial Load
 loadGames();
 
-// Grid buttons handling
+// Grid click events
 gamesGrid.addEventListener('click', function(e) {
     if (e.target.classList.contains('action-trigger-btn')) {
         const optionsDiv = e.target.nextElementSibling;
@@ -148,7 +161,7 @@ gamesGrid.addEventListener('click', function(e) {
     }
 });
 
-// Form File Upload to Cloud Storage
+// Form File Upload Functionality
 document.getElementById('uploadForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
@@ -159,7 +172,7 @@ document.getElementById('uploadForm').addEventListener('submit', async function(
     const submitBtn = document.getElementById('submitBtn');
 
     if (fileInput.files.length === 0) return;
-    const file = fileInput.files[0]; // Fixed singular file index
+    const file = fileInput.files[0]; 
 
     status.innerText = "Uploading file to cloud storage... 🚀";
     submitBtn.disabled = true;
