@@ -6,15 +6,15 @@
     <title>CharlieFreeGames | Upload & Play Free Games</title>
     <link rel="stylesheet" href="css/style.css">
     <style>
-        /* Kuch zaroori dynamic classes jo pehle se css mein shayad na hon */
         .hidden { display: none !important; }
-        .auth-box { background: #222; padding: 15px; border-radius: 8px; border: 1px solid #444; margin-bottom: 15px; text-align: left; }
-        .auth-box input { width: 100%; padding: 10px; margin: 8px 0; border-radius: 4px; border: 1px solid #555; background: #333; color: white; box-sizing: border-box; }
-        .auth-box button { width: 100%; padding: 10px; background: #ff4757; border: none; color: white; font-weight: bold; cursor: pointer; border-radius: 4px; }
-        .auth-box button:hover { background: #ff6b81; }
-        .auth-toggle { background: none !important; border: none; color: #54a0ff; cursor: pointer; text-decoration: underline; display: inline; padding: 0; width: auto; font-weight: normal !important; }
-        .user-info { color: #2ed573; margin-bottom: 10px; font-weight: bold; font-size: 14px; }
-        #logoutBtn { background: #57606f; padding: 5px 10px; color: white; border: none; border-radius: 4px; cursor: pointer; float: right; margin-top: -5px; }
+        .auth-box { background: #0b0c10; padding: 20px; border-radius: 8px; border: 1px solid #c5c6c7; margin-bottom: 15px; text-align: left; }
+        .auth-box h3 { color: #ffffff; margin-bottom: 15px; }
+        .auth-box button { width: 100%; margin-top: 5px; }
+        .auth-toggle { background: none !important; border: none; color: #45f3ff; cursor: pointer; text-decoration: underline; display: inline; padding: 0; width: auto; font-weight: normal !important; box-shadow: none !important; }
+        .auth-toggle:hover { color: #66fcf1; box-shadow: none !important; }
+        .user-info { color: #2ed573; margin-bottom: 20px; font-weight: bold; font-size: 14px; display: flex; justify-content: space-between; align-items: center; }
+        #logoutBtn { background-color: #ff4757; color: white; padding: 6px 12px; font-size: 12px; }
+        #logoutBtn:hover { background-color: #ff6b81; box-shadow: 0 0 8px #ff4757; }
     </style>
 </head>
 <body>
@@ -30,7 +30,7 @@
 
     <!-- Main Container -->
     <main>
-        <!-- Admin Upload Section (Controlled via Firebase Auth) -->
+        <!-- Admin Upload Section -->
         <section id="adminSection" class="admin-card hidden">
             
             <!-- FIREBASE LOGIN/REGISTER BOX -->
@@ -44,7 +44,7 @@
                 </p>
             </div>
 
-            <!-- ACTUAL UPLOAD FORM (Hidden until logged in) -->
+            <!-- ACTUAL UPLOAD FORM -->
             <div id="uploadFormContainer" class="hidden">
                 <div class="user-info">
                     <span id="userEmailDisplay">Logged in</span>
@@ -71,21 +71,7 @@
         <section id="gamesSection">
             <h2>🎯 Live Free Games</h2>
             <div class="games-grid" id="gamesGrid">
-                <!-- Demo Card with Action Options -->
-                <div class="game-card default-card">
-                    <h3>Demo Racing Game</h3>
-                    <span class="badge">Online & PC Game</span>
-                    <p>Click below to choose your action.</p>
-                    
-                    <!-- Main Button -->
-                    <button class="action-trigger-btn">Play / Download</button>
-                    
-                    <!-- Hidden Options Box (JS se khule ga) -->
-                    <div class="action-options hidden">
-                        <button class="download-btn" data-game="Demo Racing Game">📥 Download File</button>
-                        <button class="play-online-btn" data-game="Demo Racing Game">🎮 Play Online</button>
-                    </div>
-                </div>
+                <!-- Data Firebase se automatic load hoga -->
             </div>
         </section>
     </main>
@@ -94,103 +80,7 @@
         <p>&copy; 2026 CharlieFreeGames - 100% Free Public Service</p>
     </footer>
 
-    <!-- JS SCRIPTS -->
-    <script src="js/main.js"></script>
-
-    <!-- FIREBASE INTEGRATION SCRIPT -->
-    <script type="module">
-        import { initializeApp } from "https://gstatic.com";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://gstatic.com";
-
-        // Aap ka Firebase Configuration Code
-        const firebaseConfig = {
-            apiKey: "AIzaSyCwmGUz0kylp1c9O4kvMk0rdefQAnYnM5w",
-            authDomain: "://firebaseapp.com",
-            projectId: "charlie-games",
-            storageBucket: "charlie-games.firebasestorage.app",
-            messagingSenderId: "412741482088",
-            appId: "1:412741482088:web:9f8c92c9e4839b6ee7b56d",
-            measurementId: "G-8LMY2QETZT"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        // Elements
-        const adminBtn = document.getElementById('adminBtn');
-        const adminSection = document.getElementById('adminSection');
-        const firebaseAuthBox = document.getElementById('firebaseAuthBox');
-        const uploadFormContainer = document.getElementById('uploadFormContainer');
-        
-        const authTitle = document.getElementById('authTitle');
-        const btnAuthSubmit = document.getElementById('btnAuthSubmit');
-        const btnAuthToggle = document.getElementById('btnAuthToggle');
-        const toggleText = document.getElementById('toggleText');
-        const userEmailDisplay = document.getElementById('userEmailDisplay');
-        const logoutBtn = document.getElementById('logoutBtn');
-
-        let isLoginMode = true;
-
-        // Header Admin Panel Link Click Karne Par Section Show/Hide Karna
-        adminBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            adminSection.classList.toggle('hidden');
-        });
-
-        // Toggle Login vs Register View
-        btnAuthToggle.addEventListener('click', () => {
-            isLoginMode = !isLoginMode;
-            if (isLoginMode) {
-                authTitle.innerText = "Admin Login";
-                btnAuthSubmit.innerText = "Sign In";
-                toggleText.innerHTML = 'Account nahi hai? <button class="auth-toggle" id="btnAuthToggle">Register Karein</button>';
-            } else {
-                authTitle.innerText = "Register Admin Account";
-                btnAuthSubmit.innerText = "Sign Up";
-                toggleText.innerHTML = 'Pehle se account hai? <button class="auth-toggle" id="btnAuthToggle">Login Karein</button>';
-            }
-            // Re-bind click event to newly rendered toggle button
-            document.getElementById('btnAuthToggle').addEventListener('click', arguments.callee);
-        });
-
-        // Track Auth State (Check user login hai ya nahi)
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                firebaseAuthBox.classList.add('hidden');
-                uploadFormContainer.classList.remove('hidden');
-                userEmailDisplay.innerText = "👑 Admin: " + user.email;
-            } else {
-                firebaseAuthBox.classList.remove('hidden');
-                uploadFormContainer.classList.add('hidden');
-            }
-        });
-
-        // Auth Submit (Login / Signup Button Logic)
-        btnAuthSubmit.addEventListener('click', () => {
-            const email = document.getElementById('authEmail').value;
-            const password = document.getElementById('authPassword').value;
-
-            if(!email || !password) {
-                alert("Please fill all fields.");
-                return;
-            }
-
-            if (isLoginMode) {
-                signInWithEmailAndPassword(auth, email, password)
-                    .then(() => alert("Logged in successfully!"))
-                    .catch(err => alert("Login Error: " + err.message));
-            } else {
-                createUserWithEmailAndPassword(auth, email, password)
-                    .then(() => alert("Account registered successfully!"))
-                    .catch(err => alert("Registration Error: " + err.message));
-            }
-        });
-
-        // Logout Button
-        logoutBtn.addEventListener('click', () => {
-            signOut(auth).then(() => alert("Logged Out!"));
-        });
-    </script>
+    <!-- Firebase Code handles clicks, isliye type="module" laga diya hai -->
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>
