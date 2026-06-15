@@ -1,4 +1,4 @@
-/* Core Styling */
+/* Core Styling - Matrix Cyan Theme */
 * {
     margin: 0;
     padding: 0;
@@ -14,7 +14,7 @@ body {
     min-height: 100vh;
 }
 
-/* Header */
+/* Header Navigation */
 header {
     background-color: #1f2833;
     padding: 20px 40px;
@@ -28,6 +28,11 @@ header {
     font-size: 24px;
     font-weight: bold;
     color: #45f3ff;
+}
+
+nav {
+    display: flex;
+    align-items: center;
 }
 
 nav a {
@@ -51,16 +56,23 @@ main {
     margin: 0 auto;
 }
 
-/* Admin Dashboard Form */
-.admin-card {
+/* Admin & Auth Cards Base Styling */
+.admin-card, .auth-box {
     background-color: #1f2833;
     padding: 30px;
     border-radius: 10px;
     margin-bottom: 40px;
     border: 1px solid #45f3ff;
+    width: 100%;
 }
 
-.admin-card h2 {
+.auth-box {
+    max-width: 500px;
+    margin: 20px auto;
+    text-align: left;
+}
+
+.admin-card h2, .auth-box h3 {
     color: #ffffff;
     margin-bottom: 20px;
 }
@@ -91,24 +103,10 @@ button:hover {
     box-shadow: 0 0 10px #45f3ff;
 }
 
-/* --- Firebase Auth Dynamic Styles --- */
-.auth-box {
-    background: #0b0c10;
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid #c5c6c7;
-    margin-bottom: 15px;
-    text-align: left;
-}
-
-.auth-box h3 {
-    color: #ffffff;
-    margin-bottom: 15px;
-}
-
+/* Firebase Login Layout Tweaks */
 .auth-box button {
     width: 100%;
-    margin-top: 5px;
+    margin-top: 10px;
 }
 
 .auth-toggle {
@@ -144,15 +142,26 @@ button:hover {
     color: white;
     padding: 6px 12px;
     font-size: 12px;
+    border-radius: 5px;
 }
 
 #logoutBtn:hover {
     background-color: #ff6b81;
     box-shadow: 0 0 8px #ff4757;
 }
-/* ------------------------------------ */
 
-/* Games Grid View */
+#loginNavBtn {
+    background-color: #45f3ff;
+    color: #0b0c10;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    margin-left: 20px;
+}
+
+/* Games Grid View Layout */
 .games-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -179,7 +188,7 @@ button:hover {
     margin: 10px 0;
 }
 
-/* Action Buttons Setup */
+/* Action Trigger Interface */
 .action-options {
     margin-top: 15px;
     display: flex;
@@ -197,6 +206,10 @@ button:hover {
     color: white;
     font-size: 14px;
     padding: 10px;
+    text-decoration: none;
+    border-radius: 5px;
+    display: inline-block;
+    line-height: 20px;
 }
 
 .download-btn:hover {
@@ -216,6 +229,7 @@ button:hover {
     box-shadow: 0 0 10px #2ed573;
 }
 
+/* Crucial Alignment Fix */
 .hidden {
     display: none !important;
 }
@@ -226,7 +240,7 @@ button:hover {
     color: #45f3ff;
 }
 
-/* Footer */
+/* Footer Element */
 footer {
     background-color: #1f2833;
     text-align: center;
