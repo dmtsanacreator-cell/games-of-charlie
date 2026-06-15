@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Game Mod - Charlie Games</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #111; color: white; padding: 20px; text-align: center; }
+        .container { max-width: 450px; margin: 40px auto; background: #222; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        h2 { color: #ff4757; }
+        input, textarea, button { width: 100%; padding: 12px; margin: 10px 0; border-radius: 5px; border: 1px solid #444; box-sizing: border-box; background: #333; color: white; }
+        button { background: #ff4757; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        button:hover { background: #ff6b81; }
+        .hidden { display: none; }
+        .auth-toggle { background: none; border: none; color: #54a0ff; cursor: pointer; text-decoration: underline; margin-top: 10px; width: auto; padding: 0; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Charlie Games Mod Uploader</h2>
+        
+        <!-- LOGIN SECTION -->
+        <div id="login-section">
+            <h3 id="auth-title">Login</h3>
+            <input type="email" id="email" placeholder="Email Address">
+            <input type="password" id="password" placeholder="Password">
+            <button id="btn-primary">Sign In</button>
+            <p id="toggle-text">Account nahi hai? <button class="auth-toggle" id="btn-toggle">Register Karein</button></p>
+        </div>
+
+        <!-- UPLOAD SECTION -->
+        <div id="upload-section" class="hidden">
+            <h3>Welcome!</h3>
+            <p id="user-display" style="color: #2ed573;"></p>
+            <input type="text" id="mod-name" placeholder="Mod / Game Name">
+            <textarea id="mod-desc" placeholder="Mod Description" rows="4"></textarea>
+            <input type="file" id="mod-file">
+            <button id="btn-upload" style="background: #2ed573;">Upload Mod</button>
+            <button id="btn-logout" style="background: #57606f;">Logout</button>
+        </div>
+    </div>
+
+    <!-- FIREBASE SERVICES JS -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-analytics.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://gstatic.com";
+
+        // Aap ka Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCwmGUz0kylp1c9O4kvMk0rdefQAnYnM5w",
+            authDomain: "charlie-games.firebaseapp.com",
+            projectId: "charlie-games",
+            storageBucket: "charlie-games.firebasestorage.app",
+            messagingSenderId: "412741482088",
+            appId: "1:412741482088:web:9f8c92c9e4839b6ee7b56d",
+            measurementId: "G-8LMY2QETZT"
+        };
+
+        // Initialize
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+
+        // UI Control Elements
+        const loginSection = document.getElementById('login-section');
+        const uploadSection = document.getElementById('upload-section');
+        const authTitle = document.getElementById('auth-title');
+        const btnPrimary = document.getElementById('btn-primary');
+        const btnToggle = document.getElementById('btn-toggle');
+        const toggleText = document.getElementById('toggle-text');
+        const userDisplay = document.getElementById('user-display');
+
+        let isLoginMode = true;
+
+        // Toggle between Login and Register View
+        btnToggle.addEventListener('click', () => {
+            isLoginMode = !isLoginMode;
+            if (isLoginMode) {
+                authTitle.innerText = "Login";
+                btnPrimary.innerText = "Sign In";
+                toggleText.innerHTML = 'Account nahi hai? <button class="auth-toggle" id="btn-toggle">Register Karein</button>';
+            } else {
+                authTitle.innerText = "Register New Account";
+                btnPrimary.innerText = "Sign Up / Create Account";
+                toggleText.innerHTML = 'Pehle se account hai? <button class="auth-toggle" id="btn-toggle">Login Karein</button>';
+            }
+            // Re-attach listener to dynamic button
+            document.getElementById('btn-toggle').addEventListener('click', arguments.callee);
+        });
+
+        // Authentication State Listener (Check auto login/logout)
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                loginSection.classList.add('hidden');
+                uploadSection.classList.remove('hidden');
+                userDisplay.innerText = "Logged in as: " + user.email;
+            } else {
+                loginSection.classList.remove('hidden');
+                uploadSection.classList.add('hidden');
+            }
+        });
+
+        // Main Button Logic (Login or Signup)
+        btnPrimary.addEventListener('click', () => {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if(!email || !password) {
+                alert("Please fill all fields.");
+                return;
+            }
+
+            if (isLoginMode) {
+                // Login existing user
+                signInWithEmailAndPassword(auth, email, password)
+                    .then(() => alert("Welcome back!"))
+                    .catch(err => alert("Login Fail: " + err.message));
+            } else {
+                // Register new user
+                createUserWithEmailAndPassword(auth, email, password)
+                    .then(() => alert("Account Created Successfully!"))
+                    .catch(err => alert("Signup Fail: " + err.message));
+            }
+        });
+
+        // Logout
+        document.getElementById('btn-logout').addEventListener('click', () => {
+            signOut(auth).then(() => alert("Logged Out!"));
+        });
+    </script>
+</body>
+</html>
