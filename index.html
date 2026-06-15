@@ -12,6 +12,7 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+
         body {
             background-color: #0b0c10;
             color: #c5c6c7;
@@ -19,6 +20,7 @@
             flex-direction: column;
             min-height: 100vh;
         }
+
         header {
             background-color: #1f2833;
             padding: 20px 40px;
@@ -27,15 +29,18 @@
             align-items: center;
             border-bottom: 2px solid #45f3ff;
         }
+
         .logo {
             font-size: 24px;
             font-weight: bold;
             color: #45f3ff;
         }
+
         nav {
             display: flex;
             align-items: center;
         }
+
         nav a {
             color: #ffffff;
             text-decoration: none;
@@ -43,9 +48,11 @@
             font-weight: 600;
             transition: 0.3s;
         }
+
         nav a:hover {
             color: #45f3ff;
         }
+
         main {
             flex: 1;
             padding: 40px;
@@ -53,6 +60,7 @@
             width: 100%;
             margin: 0 auto;
         }
+
         .admin-card, .auth-box {
             background-color: #1f2833;
             padding: 30px;
@@ -61,11 +69,18 @@
             border: 1px solid #45f3ff;
             width: 100%;
         }
+
         .auth-box {
             max-width: 500px;
             margin: 20px auto;
             text-align: left;
         }
+
+        .admin-card h2, .auth-box h3 {
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
         input, select, textarea {
             width: 100%;
             padding: 12px;
@@ -75,6 +90,7 @@
             color: #ffffff;
             border-radius: 5px;
         }
+
         button {
             background-color: #45f3ff;
             color: #0b0c10;
@@ -85,14 +101,17 @@
             cursor: pointer;
             transition: 0.3s;
         }
+
         button:hover {
             background-color: #66fcf1;
             box-shadow: 0 0 10px #45f3ff;
         }
+
         .auth-box button {
             width: 100%;
             margin-top: 10px;
         }
+
         .auth-toggle {
             background: none !important;
             border: none;
@@ -105,6 +124,7 @@
             font-weight: normal !important;
             box-shadow: none !important;
         }
+
         .user-info {
             color: #2ed573;
             margin-bottom: 20px;
@@ -114,6 +134,7 @@
             justify-content: space-between;
             align-items: center;
         }
+
         #logoutBtn {
             background-color: #ff4757;
             color: white;
@@ -121,6 +142,7 @@
             font-size: 12px;
             border-radius: 5px;
         }
+
         #loginNavBtn {
             background-color: #45f3ff;
             color: #0b0c10;
@@ -131,12 +153,14 @@
             border: none;
             margin-left: 20px;
         }
+
         .games-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 25px;
             margin-top: 20px;
         }
+
         .game-card {
             background-color: #1f2833;
             padding: 20px;
@@ -144,6 +168,7 @@
             text-align: center;
             border: 1px solid #2f3e46;
         }
+
         .badge {
             background-color: #45f3ff;
             color: #0b0c10;
@@ -154,16 +179,19 @@
             display: inline-block;
             margin: 10px 0;
         }
+
         .action-options {
             margin-top: 15px;
             display: flex;
             gap: 10px;
             justify-content: center;
         }
+
         .action-trigger-btn {
             width: 100%;
             margin-top: 15px;
         }
+
         .download-btn {
             background-color: #ff4757;
             color: white;
@@ -174,24 +202,29 @@
             display: inline-block;
             line-height: 20px;
         }
+
         .download-btn:hover {
             background-color: #ff6b81;
             box-shadow: 0 0 10px #ff4757;
         }
+
         .play-online-btn {
             background-color: #2ed573;
             color: white;
             font-size: 14px;
             padding: 10px;
         }
+
         .hidden {
             display: none !important;
         }
+
         #statusMessage {
             margin-top: 15px;
             font-weight: bold;
             color: #45f3ff;
         }
+
         footer {
             background-color: #1f2833;
             text-align: center;
@@ -214,7 +247,7 @@
     </header>
 
     <main>
-        <!-- LOGIN BOX -->
+        <!-- SEPARATE LOGIN/REGISTER BOX -->
         <section id="authSection" class="auth-box hidden">
             <h3 id="authTitle">Admin Login</h3>
             <input type="email" id="authEmail" placeholder="Email Address">
@@ -225,7 +258,7 @@
             </p>
         </section>
 
-        <!-- UPLOAD SECTION -->
+        <!-- Admin Upload Section -->
         <section id="adminSection" class="admin-card hidden">
             <div class="user-info">
                 <span id="userEmailDisplay">Logged in</span>
@@ -265,7 +298,7 @@
 
         const firebaseConfig = {
             apiKey: "AIzaSyCwmGUz0kylp1c9O4kvMk0rdefQAnYnM5w",
-            authDomain: "charlie-games.firebaseapp.com",
+            authDomain: "://firebaseapp.com",
             projectId: "charlie-games",
             storageBucket: "charlie-games.firebasestorage.app",
             messagingSenderId: "412741482088",
@@ -300,6 +333,7 @@
             adminSection.classList.toggle('hidden');
         });
 
+        // Crash-Free Safe Toggle Listener (Login vs Register text switcher)
         document.addEventListener('click', function (e) {
             if (e.target && e.target.id === 'btnAuthToggle') {
                 isLoginMode = !isLoginMode;
@@ -354,7 +388,7 @@
                 const q = query(collection(db, "games"), orderBy("timestamp", "desc"));
                 const querySnapshot = await getDocs(q);
                 if(querySnapshot.empty) {
-                    gamesGrid.innerHTML = '<p style="grid-column:1/-1;text-align:center;">No games yet.</p>';
+                    gamesGrid.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:20px;">No games uploaded yet.</p>';
                     return;
                 }
                 querySnapshot.forEach((doc) => {
@@ -367,8 +401,8 @@
                         <p>Click below to choose your action.</p>
                         <button class="action-trigger-btn">Play / Download</button>
                         <div class="action-options hidden">
-                            <a href="${game.fileUrl}" target="_blank" class="download-btn">📥 Download</a>
-                            <button class="play-online-btn" data-game="${game.name}">🎮 Play</button>
+                            <a href="${game.fileUrl}" target="_blank" class="download-btn">📥 Download File</a>
+                            <button class="play-online-btn" data-game="${game.name}">🎮 Play Online</button>
                         </div>
                     `;
                     gamesGrid.appendChild(newCard);
@@ -382,7 +416,7 @@
                 e.target.nextElementSibling.classList.toggle('hidden');
             }
             if (e.target.classList.contains('play-online-btn')) {
-                alert("Launching: " + e.target.getAttribute('data-game'));
+                alert("Launching Game Client: Loading " + e.target.getAttribute('data-game'));
             }
         });
 
@@ -395,18 +429,22 @@
             const submitBtn = document.getElementById('submitBtn');
 
             if (fileInput.files.length === 0) return;
-            const file = fileInput.files[0]; // Sahi static selection logic hook
+            const file = fileInput.files[0]; // Exact fixed pointer array assignment
 
-            status.innerText = "Uploading... 🚀";
+            status.innerText = "Uploading file to cloud storage... 🚀";
             submitBtn.disabled = true;
 
             try {
                 const storageRef = ref(storage, 'mods/' + Date.now() + '_' + file.name);
                 const snapshot = await uploadBytes(storageRef, file);
+                
+                status.innerText = "File uploaded! Generating download link... 🔗";
                 const downloadUrl = await getDownloadURL(snapshot.ref);
 
+                status.innerText = "Saving game data to database... 💾";
                 await addDoc(collection(db, "games"), { name, type, fileUrl: downloadUrl, timestamp: Date.now() });
-                status.innerText = "Success! 🎉";
+                
+                status.innerText = "Success! Permanent Link deployed. 🎉";
                 document.getElementById('uploadForm').reset();
                 loadGames();
             } catch (err) { status.innerText = "Error: " + err.message; }
